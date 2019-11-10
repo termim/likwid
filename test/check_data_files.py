@@ -505,7 +505,7 @@ class GroupParser():
 
         metrics = Keyword('METRICS').suppress() + EOL + \
         Group(OneOrMore(
-            LineStart() + Group(OneOrMore(Word(alphanums+'.[]()-+*/|')) + SkipTo(LineEnd(), failOn=LineStart()+LineEnd())
+            LineStart() + Group(OneOrMore(Word(alphanums+'.[]()-+*/|%')) + SkipTo(LineEnd(), failOn=LineStart()+LineEnd())
                             ).setParseAction(self.add_metric) + EOL
         ))
         self.parser += metrics + OneOrMore(EOL)
