@@ -449,7 +449,7 @@ def extract_units(s):
 
 
 
-class GroupParser():
+class GroupParser:
     """
     eol = '\n' ;
     letter = 'A' - 'Z' | 'a' - 'z' ;
@@ -476,7 +476,9 @@ class GroupParser():
     group = short, [ noht ], eventset, metrics, "LONG", eol, formulas, sep, long
     """
 
-    def __init__(self):
+    def __init__(self, opts):
+
+        self.opts = opts
 
         EOL = LineEnd().suppress()
         Line = LineStart() + SkipTo(LineEnd(), failOn=LineStart()+LineEnd()) + EOL
@@ -513,7 +515,10 @@ class GroupParser():
         long = Keyword('LONG').suppress() + EOL
         self.parser += long
 
-        formulae = Keyword('Formulas:') + EOL + OneOrMore(Line().setParseAction(self.add_formula))
+        if opts.check_formulas:
+            formulae = Keyword('Formulas:') + EOL + OneOrMore(Line().setParseAction(self.add_formula))
+        else:
+            formulae = Optional(Keyword('Formulas:') + EOL + ZeroOrMore(Line().setParseAction(self.add_formula)))
         self.parser += formulae
 
         descr = (Keyword('-') ^ Keyword('--')).suppress() + EOL + Group(OneOrMore(Line()))
@@ -538,6 +543,9 @@ class GroupParser():
             raise ParseSyntaxException(s, loc, "expected '[{}]', found '{}'".format(dim, dim))
         metric, units = extract_units(metric)
         formula = toks[0][-2]
+        if self.opts.check_duplicates:
+            if metric in [f['metric'] for f in self.group['metrics']]:
+                raise ParseSyntaxException(s, loc, "Duplicate metric: {}".format(metric))
         self.group['metrics'].append(dict(metric=metric, formula=formula, units=units))
 
 
@@ -550,9 +558,10 @@ class GroupParser():
             raise ParseSyntaxException(s, loc, "expected '[{}]', found '{}'".format(dim, dim))
         metric, units = extract_units(metric)
         log.debug("add_formula: |{}| = |{}|".format(metric, formula))
-        #if metric in self.group['formulae']:
-            #self.nerrors += 1
-            #err("\n{}:{}:\nDuplicate metric formula: {}", self.fname, self.line_num, token['name'])
+        if self.opts.check_formulas:
+            if self.opts.check_duplicates:
+                if metric in [f['metric'] for f in self.group['formulae']]:
+                    raise ParseSyntaxException(s, loc, "Duplicate formula: {}".format(metric))
         self.group['formulae'].append(dict(metric=metric, formula=formula, units=units))
 
 
@@ -625,7 +634,7 @@ def check_groups(opts):
 
     start_logging(args)
     files = resolve_group_files(opts)
-    gp = GroupParser()
+    gp = GroupParser(opts)
     nerrors = 0
     for fn in files:
         log.info("checking: {}".format(fn))
@@ -717,6 +726,10 @@ if __name__ == "__main__":
     gtest.add_argument('--output-dir', '-o', type=Path,
                         default=Path('.'),
                         help='directory where to put output JSON files, default: current directory')
+    gtest.add_argument('--check-formulas', '-f', action='store_true', default=False,
+                    help="check for missing 'Formulas:' section")
+    gtest.add_argument('--check-duplicates', '-D', action='store_true', default=False,
+                    help="check metrics and formulae for duplicates")
 
     args = ap.parse_args()
 
