@@ -480,8 +480,9 @@ class GroupParser():
 
         EOL = LineEnd().suppress()
         Line = LineStart() + SkipTo(LineEnd(), failOn=LineStart()+LineEnd()) + EOL
+        comments = Regex(r"\s*#.*").setName("Python style comment")
 
-        short = Keyword('SHORT').suppress() + SkipTo(LineEnd(), failOn=LineStart()+LineEnd()) + EOL
+        short = Keyword('SHORT').suppress() + SkipTo(LineEnd(), failOn=LineStart()+LineEnd()) #+ EOL
         short.setParseAction(
             lambda s, loc, toks:
                 self.group.update(short=toks[0])
@@ -521,6 +522,7 @@ class GroupParser():
                 self.group.update(long=' '.join(toks[0]))
         )
         self.parser += descr
+        self.parser.ignore(comments)
 
 
     def add_event(self, s, loc, toks):
