@@ -24,7 +24,7 @@ LONG
 Formulas:
 Power Core [W] = RAPL_CORE_ENERGY/time
 Power PKG [W] = RAPL_PKG_ENERGY/time
--
+--
 Ryzen implements the RAPL interface previously introduced by Intel.
 This interface enables to monitor the consumed energy on the core and package
 domain.

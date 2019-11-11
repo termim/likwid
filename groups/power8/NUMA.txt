@@ -26,4 +26,3 @@ Memory evict data volume [GBytes] = 1.0E-09* (PM_MEM_CO)*128
 Memory bandwidth [MBytes/s] = 1.0E-06* (PM_DATA_ALL_FROM_MEMORY+PM_MEM_CO)*128/time
 Memory data volume [GBytes] = 1.0E-09* (PM_DATA_ALL_FROM_MEMORY+PM_MEM_CO)*128
 --
-This group measures the NUMA traffic by separating local from remote memory data transfers.
