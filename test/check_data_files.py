@@ -506,9 +506,10 @@ class GroupParser():
         ))
         self.parser += eventset + OneOrMore(EOL)
 
+        Units = Literal('[').suppress() + Word(alphanums+'.()-+*/%', excludeChars='[]') + Literal(']').suppress()
         metrics = Keyword('METRICS').suppress() + EOL + \
         Group(OneOrMore(
-            LineStart() + Group(OneOrMore(Word(alphanums+'.[]()-+*/')) + SkipTo(LineEnd(), failOn=LineStart()+LineEnd())
+            LineStart() + Group(Group(OneOrMore(Word(alphanums+'.()-+*/|<>', excludeChars='[]'))) + Optional(Units()) + SkipTo(LineEnd(), failOn=LineStart()+LineEnd())
                             ).setParseAction(self.add_metric) + EOL
         ))
         self.parser += metrics + OneOrMore(EOL)
@@ -535,12 +536,16 @@ class GroupParser():
 
     def add_metric(self, s, loc, toks):
         log.debug("add_metric: |{}|".format(toks[0]))
-        metric = ' '.join(toks[0][0:-2])
-        dim = miss_brackets_in_units(metric)
-        if dim:
-            raise ParseSyntaxException(s, loc, "expected '[{}]', found '{}'".format(dim, dim))
-        metric, units = extract_units(metric)
-        formula = toks[0][-2]
+        if len(toks[0]) == 3:
+            metric, units, formula = toks[0]
+        elif len(toks[0]) == 2:
+            metric, formula = toks[0]
+            if len(formula) == 0:
+                metric, formula = metric[:-1], metric[-1]
+            units = None
+        else:
+            raise ParseSyntaxException(s, loc, "expected <metric> [<units>] <formula>")
+        metric = ' '.join(metric)
         self.group['metrics'].append(dict(metric=metric, formula=formula, units=units))
 
 
