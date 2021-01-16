@@ -546,7 +546,14 @@ class GroupParser():
         else:
             raise ParseSyntaxException(s, loc, "expected <metric> [<units>] <formula>")
         metric = ' '.join(metric)
-        self.group['metrics'].append(dict(metric=metric, formula=formula, units=units))
+        metrics = [ m['metric'] for m in self.group['metrics'] ]
+        if metric in metrics:
+            prev = metrics.index(metric)
+            if units == self.group['metrics'][prev]['units']:
+                err("\n{}:{}:\nDuplicate metric: '{}'"
+                    "\nPrevious declaration is here:\n{}:{}:\n",
+                    self.fname, lineno(loc, s), metric, self.fname, self.group['metrics'][prev]['line_num'])
+        self.group['metrics'].append(dict(metric=metric, formula=formula, units=units, line_num=lineno(loc, s)))
 
 
     def add_formula(self, s, loc, toks):
@@ -599,7 +606,10 @@ class GroupParser():
 
     def to_json(self, f, indent=4, sort_keys=True):
 
-        json.dump(self.group, f, indent=indent, sort_keys=sort_keys)
+        group = self.group.copy()
+        for metric in group['metrics']:
+            metric.pop('line_num')
+        json.dump(group, f, indent=indent, sort_keys=sort_keys)
 
 
 
