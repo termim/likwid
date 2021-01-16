@@ -1,4 +1,4 @@
-SHORT L1/L2 TLB information 
+SHORT L1/L2 TLB information
 
 EVENTSET
 PMC0  L1D_TLB
@@ -18,7 +18,7 @@ L1 ITLB refills PMC4
 L2 DTLB refills PMC5
 L1 DTLB refill ratio PMC3/PMC0
 L1 ITLB refill ratio PMC4/PMC1
-L1 DTLB refill ratio PMC5/PMC2
+L2 DTLB refill ratio PMC5/PMC2
 
 LONG
 Formulas:

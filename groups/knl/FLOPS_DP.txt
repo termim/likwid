@@ -12,17 +12,17 @@ Runtime (RDTSC) [s] time
 Runtime unhalted [s] FIXC1*inverseClock
 Clock [MHz]  1.E-06*(FIXC1/FIXC2)/inverseClock
 CPI  FIXC1/FIXC0
-DP [MFLOP/s] (SSE assumed) 1.0E-06*((PMC1*2.0)+PMC0)/time
-DP [MFLOP/s] (AVX assumed) 1.0E-06*((PMC1*4.0)+PMC0)/time
-DP [MFLOP/s] (AVX512 assumed) 1.0E-06*((PMC1*8.0)+PMC0)/time
+DP (SSE assumed) [MFLOP/s] 1.0E-06*((PMC1*2.0)+PMC0)/time
+DP (AVX assumed) [MFLOP/s] 1.0E-06*((PMC1*4.0)+PMC0)/time
+DP (AVX512 assumed) [MFLOP/s] 1.0E-06*((PMC1*8.0)+PMC0)/time
 Packed [MUOPS/s]   1.0E-06*(PMC1)/time
 Scalar [MUOPS/s] 1.0E-06*PMC0/time
 
 LONG
 Formulas:
-DP [MFLOP/s] (SSE assumed) = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD*2+UOPS_RETIRED_SCALAR_SIMD)/runtime
-DP [MFLOP/s] (AVX assumed) = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD*4+UOPS_RETIRED_SCALAR_SIMD)/runtime
-DP [MFLOP/s] (AVX512 assumed) = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD*8+UOPS_RETIRED_SCALAR_SIMD)/runtime
+DP (SSE assumed) [MFLOP/s] = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD*2+UOPS_RETIRED_SCALAR_SIMD)/runtime
+DP (AVX assumed) [MFLOP/s] = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD*4+UOPS_RETIRED_SCALAR_SIMD)/runtime
+DP (AVX512 assumed) [MFLOP/s] = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD*8+UOPS_RETIRED_SCALAR_SIMD)/runtime
 Packed [MUOPS/s] = 1.0E-06*(UOPS_RETIRED_PACKED_SIMD)/runtime
 Scalar [MUOPS/s] = 1.0E-06*UOPS_RETIRED_SCALAR_SIMD/runtime
 -
