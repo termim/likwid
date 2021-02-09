@@ -457,7 +457,7 @@ UMASK_SIMD_SAT_UOP_EXEC_AR                            0x80
 
 EVENT_SIMD_UOPS_EXEC            0xB0  PMC
 UMASK_SIMD_UOPS_EXEC_S          0x00
-UMASK_SIMD_UOPS_EXEC_AR                               0xB0 0x80
+UMASK_SIMD_UOPS_EXEC_AR         0x80
 
 EVENT_SIMD_UOP_TYPE_EXEC               0xB3  PMC
 UMASK_SIMD_UOP_TYPE_EXEC_ARITHMETIC_AR                0xA0
